@@ -271,15 +271,14 @@ document.addEventListener('DOMContentLoaded', () => {
       .modal-overlay {
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-        background-color: rgba(0, 0, 0, 0.65); /* Slightly darker background with blur */
+        background-color: rgba(0, 0, 0, 0.65);
         transition: backdrop-filter 0.3s ease, background-color 0.3s ease;
       }
       
       .modal-container {
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* Enhanced shadow for better depth */
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
       }
       
-      /* Improved animation for modal appearance */
       .modal-overlay.active .modal-container {
         transform: translateY(0) scale(1);
         opacity: 1;
@@ -311,41 +310,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Auto show modal after a delay (only on homepage and if not shown before)
     if (window.location.pathname === '/' || window.location.pathname.includes('index.html')) {
-      // In dev mode, we clear the sessionStorage on each page load for testing
-      if (DEV_MODE) {
-        sessionStorage.removeItem('hasShownWaitlistModal');
-        
-        // Add a debug button for developers
-        const debugButton = document.createElement('button');
-        debugButton.textContent = 'Test Waitlist Modal';
-        debugButton.style.position = 'fixed';
-        debugButton.style.bottom = '20px';
-        debugButton.style.left = '20px';
-        debugButton.style.zIndex = '9999';
-        debugButton.style.padding = '10px';
-        debugButton.style.background = '#f44336';
-        debugButton.style.color = 'white';
-        debugButton.style.border = 'none';
-        debugButton.style.borderRadius = '4px';
-        debugButton.style.cursor = 'pointer';
-        
-        debugButton.addEventListener('click', () => {
-          openWaitlistModal();
-        });
-        
-        document.body.appendChild(debugButton);
-      }
-      
       // Check if we've shown the modal before in this session
       const hasShownModal = sessionStorage.getItem('hasShownWaitlistModal');
       
-      if (!hasShownModal || DEV_MODE) {
-        // Show modal after 5 seconds (5000ms) - adjust time as needed
+      if (!hasShownModal) {
+        // Show modal after 5 seconds
         setTimeout(() => {
           openWaitlistModal();
           // Mark that we've shown the modal in this session
           sessionStorage.setItem('hasShownWaitlistModal', 'true');
-        }, DEV_MODE ? 2000 : 5000); // Shorter delay in dev mode
+        }, 5000);
       }
     }
     
@@ -1263,18 +1237,19 @@ if (searchInput) {
 // Cookie Consent Banner
 const cookieBanner = document.getElementById('cookie-banner');
 const acceptButton = document.getElementById('cookie-accept');
-const declineButton = document.getElementById('cookie-settings'); // Now it's the decline button
+const declineButton = document.getElementById('cookie-settings');
 
 // Check if user has already accepted or declined cookies
 function checkCookieConsent() {
   const cookieConsent = localStorage.getItem('cookieConsent');
   
   if (cookieConsent === 'accepted' || cookieConsent === 'declined') {
-    // User has already made a choice
     cookieBanner.style.display = 'none';
   } else {
-    // Show the cookie banner
-    cookieBanner.style.display = 'block';
+    // Show the cookie banner after 2 seconds
+    setTimeout(() => {
+      cookieBanner.style.display = 'block';
+    }, 2000);
   }
 }
 
@@ -1282,21 +1257,12 @@ function checkCookieConsent() {
 function acceptCookies() {
   localStorage.setItem('cookieConsent', 'accepted');
   cookieBanner.style.display = 'none';
-  console.log('Cookies accepted');
 }
 
 // Set cookie consent as declined in localStorage
 function declineCookies() {
   localStorage.setItem('cookieConsent', 'declined');
   cookieBanner.style.display = 'none';
-  console.log('Cookies declined');
-}
-
-// Test function - can be called from console to reset cookie consent
-window.testCookieBanner = function() {
-  localStorage.removeItem('cookieConsent');
-  checkCookieConsent();
-  console.log('Cookie consent reset. Banner should now be visible.');
 }
 
 // Add event listeners
@@ -1310,9 +1276,3 @@ if (declineButton) {
 
 // Check cookie consent on page load
 document.addEventListener('DOMContentLoaded', checkCookieConsent);
-
-// Add event listener for test cookie button
-const testCookieButton = document.getElementById('test-cookie-button');
-if (testCookieButton) {
-  testCookieButton.addEventListener('click', testCookieBanner);
-}
