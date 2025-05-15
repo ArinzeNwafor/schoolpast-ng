@@ -294,18 +294,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const registeredEmail = localStorage.getItem('registeredEmail');
 
     // Function to show modal
-    const showModal = () => {
+    window.showModal = () => {
       waitlistModal.classList.add('active');
       document.body.style.overflow = 'hidden';
     };
 
     // Function to hide modal
     window.hideModal = () => {
-      const waitlistModal = document.getElementById('waitlistModal');
-      if (waitlistModal) {
-        waitlistModal.classList.remove('active');
-        document.body.style.overflow = '';
-      }
+      waitlistModal.classList.remove('active');
+      document.body.style.overflow = '';
     };
 
     // Close button functionality

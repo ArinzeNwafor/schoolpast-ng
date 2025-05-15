@@ -29,7 +29,7 @@
                 </div>
                 <div class="nav-buttons">
                     <a href="login.html" class="login-link">Login</a>
-                    <a href="signup.html" class="button primary-button">Get Started</a>
+                    <a href="#" class="button primary-button" onclick="showModal(); return false;">Join Our Waiting List</a>
                 </div>
                 <div class="mobile-menu-button">
                     <span></span>
@@ -265,42 +265,28 @@
         <div class="modal-container">
             <div class="modal-content">
                 <button class="modal-close" id="closeModal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
                 <div class="modal-header">
                     <h2>Join Our Waitlist</h2>
-                    <p>Be the first to know when Schoolpast.ng launches. Sign up to get early access!</p>
+                    <p>Be the first to know when we launch</p>
                 </div>
-                <form class="modal-form" id="waitlistForm">
+                <form class="modal-form" id="waitlistForm">                    
                     <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="institution">Institution</label>
-                        <input type="text" id="institution" name="institution" placeholder="Enter your institution" required>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="button primary-button full-width">Join Waitlist</button>
-                    </div>
+                        <label for="waitlist-email">Email Address</label>
+                        <input type="email" id="waitlist-email" name="email" placeholder="Enter your email" required>
+                    </div>                    
+                    <button type="submit" class="button primary-button full-width">Join Waitlist</button>
                 </form>
             </div>
             <div class="modal-image">
                 <div class="modal-image-content">
-                    <h3>Be Part of the Revolution</h3>
-                    <p>Join thousands of Nigerian students who are already excited about Schoolpast.ng</p>
+                    <h3>Join our community</h3>
+                    <p>Connect with students across Nigeria</p>
                     <div class="stats">
                         <div class="stat-item">
-                            <span class="stat-number">500+</span>
+                            <span class="stat-number">5,000+</span>
                             <span class="stat-label">Waitlist</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">30+</span>
-                            <span class="stat-label">Schools</span>
                         </div>
                     </div>
                 </div>

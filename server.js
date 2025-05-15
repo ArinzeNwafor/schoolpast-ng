@@ -113,7 +113,7 @@ app.post('/api/waitlist', async (req, res) => {
       // Build the HTML content
       const htmlContent = `
         <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <img src="https://schoolpast.ng/schoolpastlogo.png" alt="SchoolPast.ng Logo" style="max-width: 150px; display: block; margin: 0 auto 20px;">
+          <img src="https://github.com/ArinzeNwafor/schoolpast-ng/blob/main/schoolpastlogo.png" alt="SchoolPast.ng Logo" style="max-width: 150px; display: block; margin: 0 auto 20px;">
           <h1 style="color: #0a7c2e; text-align: center; margin-bottom: 20px;">You're on the waitlist!</h1>
           <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
             Thank you for joining the SchoolPast.ng waitlist! We're excited to have you on board.
@@ -147,7 +147,7 @@ app.post('/api/waitlist', async (req, res) => {
       sendSmtpEmail.subject = "🎉 You're IN! Your Journey with SchoolPast.ng Begins Now!";
       sendSmtpEmail.htmlContent = htmlContent;
       sendSmtpEmail.sender = { 
-        name: "Arinze from SchoolPast.ng", 
+        name: "SchoolPast.ng Team", 
         email: process.env.SENDER_EMAIL || "noreply@schoolpast.ng" 
       };
       sendSmtpEmail.to = [{ email: email }];
