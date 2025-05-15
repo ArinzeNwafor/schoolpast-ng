@@ -284,198 +284,79 @@ document.addEventListener('DOMContentLoaded', () => {
       .modal-container {
         transform: translateY(20px) scale(0.95);
         opacity: 0;
-        transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.4s ease;
+        transition: transform 0.3s ease, opacity 0.3s ease;
       }
     `;
     document.head.appendChild(blurStyles);
-    
-    // Function to open modal with blur effect
-    function openWaitlistModal() {
-      if (waitlistModal) {
-        waitlistModal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
-      }
+
+    // Check if user is already registered
+    const isRegistered = localStorage.getItem('waitlistRegistered');
+    const registeredEmail = localStorage.getItem('registeredEmail');
+
+    // Function to show modal
+    const showModal = () => {
+      waitlistModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+
+    // Function to hide modal
+    const hideModal = () => {
+      waitlistModal.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    // Close button functionality
+    const closeButton = document.getElementById('closeModal');
+    if (closeButton) {
+      closeButton.addEventListener('click', hideModal);
     }
-    
-    // Function to close modal and remove blur
-    function closeWaitlistModal() {
-      if (waitlistModal) {
-        waitlistModal.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
-      }
-    }
-    
-    // Check if user has registered
-    const hasRegistered = localStorage.getItem('waitlistRegistered');
-    
-    // Auto show modal after a delay if user hasn't registered
-    if (!hasRegistered) {
-      setTimeout(() => {
-        openWaitlistModal();
-      }, 5000); // Show after 5 seconds
-    }
-    
-    // Add waitlist trigger to CTA buttons
-    const ctaButtons = document.querySelectorAll('.cta-button')
-    ctaButtons.forEach(button => {
-      // Change the button to open the modal instead of navigating to signup
-      if (button.getAttribute('href') === 'signup.html') {
-        button.setAttribute('data-open-waitlist', 'true')
-        button.addEventListener('click', (e) => {
-          e.preventDefault()
-          openWaitlistModal()
-        })
-      }
-    })
-    
-    // Close modal when clicking X button
-    const closeModalButton = document.getElementById('closeModal')
-    if (closeModalButton) {
-      closeModalButton.addEventListener('click', closeWaitlistModal);
-    }
-    
-    // Close modal when clicking outside
+
+    // Close on outside click
     waitlistModal.addEventListener('click', (e) => {
       if (e.target === waitlistModal) {
-        closeWaitlistModal();
+        hideModal();
       }
     });
-    
-    // Handle waitlist form submission
-    const waitlistForm = document.getElementById('waitlistForm')
+
+    // Handle form submission
+    const waitlistForm = document.getElementById('waitlistForm');
     if (waitlistForm) {
-      waitlistForm.addEventListener('submit', function(e) {
+      waitlistForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        // Basic form validation
-        let isValid = true;
-        const inputs = waitlistForm.querySelectorAll('input[required]');
-        
-        inputs.forEach(input => {
-          if (!input.value.trim()) {
-            isValid = false;
-            input.classList.add('error');
-            
-            // Create error message if it doesn't exist
-            let errorMsg = input.parentElement.querySelector('.error-message');
-            if (!errorMsg) {
-              errorMsg = document.createElement('div');
-              errorMsg.className = 'error-message';
-              input.parentElement.appendChild(errorMsg);
-            }
-            errorMsg.textContent = `${input.placeholder.replace('Enter your ', '').replace('Create a ', '')} is required`;
-          } else {
-            input.classList.remove('error');
-            const errorMsg = input.parentElement.querySelector('.error-message');
-            if (errorMsg) errorMsg.remove();
-          }
-        });
-        
-        // Email validation
-        const emailInput = waitlistForm.querySelector('input[type="email"]');
-        if (emailInput && emailInput.value) {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(emailInput.value)) {
-            isValid = false;
-            emailInput.classList.add('error');
-            
-            let errorMsg = emailInput.parentElement.querySelector('.error-message');
-            if (!errorMsg) {
-              errorMsg = document.createElement('div');
-              errorMsg.className = 'error-message';
-              emailInput.parentElement.appendChild(errorMsg);
-            }
-            errorMsg.textContent = 'Please enter a valid email address';
-          }
-        }
-        
-        if (isValid) {
-          // Get the email from the form
-          const email = emailInput.value;
+        const emailInput = document.getElementById('waitlist-email');
+        const email = emailInput.value.trim();
+
+        // Check if email is already registered
+        if (email === registeredEmail) {
+          // Show error message
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'form-error-message';
+          errorDiv.textContent = 'This email is already registered for the waitlist!';
           
-          // Simulate form submission with a loading state
-          const submitButton = waitlistForm.querySelector('button[type="submit"]');
-          const originalText = submitButton.textContent;
-          submitButton.textContent = 'Submitting...';
-          submitButton.disabled = true;
+          // Remove any existing error message
+          const existingError = waitlistForm.querySelector('.form-error-message');
+          if (existingError) {
+            existingError.remove();
+          }
           
-          // Submit the form to our API
-          fetch('/api/waitlist', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email })
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              // Mark user as registered
-              localStorage.setItem('waitlistRegistered', 'true');
-              
-              // Show success message
-              const modalContent = waitlistForm.closest('.modal-content');
-              modalContent.innerHTML = `
-                <div class="success-animation">
-                  <div class="checkmark-circle">
-                    <div class="checkmark-circle-bg">
-                      <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                        <path fill="none" stroke="#0a7c2e" stroke-width="3" d="M14,27 L22,35 L38,17" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div class="success-message">+1 😍 Welcome to the waitlist!</div>
-                  <p class="success-description">We've sent you a confirmation email. Thank you for your interest in Schoolpast.ng!</p>
-                  <button class="button primary-button" id="closeSuccessModal">Got it</button>
-                </div>
-              `;
-              
-              // Add event listener to close button
-              const closeSuccessButton = document.getElementById('closeSuccessModal');
-              if (closeSuccessButton) {
-                closeSuccessButton.addEventListener('click', closeWaitlistModal);
-              }
-              
-              // Close modal after 3 seconds
-              setTimeout(closeWaitlistModal, 3000);
-            } else {
-              // Handle error
-              submitButton.textContent = originalText;
-              submitButton.disabled = false;
-              
-              let errorMsg = waitlistForm.querySelector('.form-error-message');
-              if (!errorMsg) {
-                errorMsg = document.createElement('div');
-                errorMsg.className = 'form-error-message';
-                waitlistForm.appendChild(errorMsg);
-              }
-              errorMsg.textContent = data.message || 'There was an error submitting your email. Please try again.';
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            submitButton.textContent = originalText;
-            submitButton.disabled = false;
-            
-            let errorMsg = waitlistForm.querySelector('.form-error-message');
-            if (!errorMsg) {
-              errorMsg = document.createElement('div');
-              errorMsg.className = 'form-error-message';
-              waitlistForm.appendChild(errorMsg);
-            }
-            errorMsg.textContent = 'There was an error submitting your email. Please try again.';
-          });
+          waitlistForm.appendChild(errorDiv);
+          return;
         }
+
+        // Simulate API call/registration
+        localStorage.setItem('waitlistRegistered', 'true');
+        localStorage.setItem('registeredEmail', email);
+        
+        // Show success message and close modal
+        alert('Successfully joined the waitlist!');
+        hideModal();
       });
-      
-      // Clear errors on input change
-      waitlistForm.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', function() {
-          input.classList.remove('error');
-          const errorMsg = input.parentElement.querySelector('.error-message');
-          if (errorMsg) errorMsg.remove();
-        });
-      });
+    }
+
+    // Only show modal if user is not registered
+    if (!isRegistered && !registeredEmail) {
+      // Show modal after 5 seconds
+      setTimeout(showModal, 5000);
     }
   }
 });
