@@ -1,9 +1,6 @@
 // Set current year in footer
 document.getElementById("current-year").textContent = new Date().getFullYear()
 
-// Developer mode for testing - set to true during development, false in production
-const DEV_MODE = true;
-
 // Header scroll effect
 const header = document.querySelector(".header")
 window.addEventListener("scroll", () => {
@@ -308,19 +305,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     
-    // Auto show modal after a delay (only on homepage and if not shown before)
-    if (window.location.pathname === '/' || window.location.pathname.includes('index.html')) {
-      // Check if we've shown the modal before in this session
-      const hasShownModal = sessionStorage.getItem('hasShownWaitlistModal');
-      
-      if (!hasShownModal) {
-        // Show modal after 5 seconds
-        setTimeout(() => {
-          openWaitlistModal();
-          // Mark that we've shown the modal in this session
-          sessionStorage.setItem('hasShownWaitlistModal', 'true');
-        }, 5000);
-      }
+    // Check if user has registered
+    const hasRegistered = localStorage.getItem('waitlistRegistered');
+    
+    // Auto show modal after a delay if user hasn't registered
+    if (!hasRegistered) {
+      setTimeout(() => {
+        openWaitlistModal();
+      }, 5000); // Show after 5 seconds
     }
     
     // Add waitlist trigger to CTA buttons
@@ -339,18 +331,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close modal when clicking X button
     const closeModalButton = document.getElementById('closeModal')
     if (closeModalButton) {
-      closeModalButton.addEventListener('click', closeWaitlistModal)
+      closeModalButton.addEventListener('click', closeWaitlistModal);
     }
     
     // Close modal when clicking outside
-    const waitlistModal = document.getElementById('waitlistModal')
-    if (waitlistModal) {
-      waitlistModal.addEventListener('click', (e) => {
-        if (e.target === waitlistModal) {
-          closeWaitlistModal()
-        }
-      })
-    }
+    waitlistModal.addEventListener('click', (e) => {
+      if (e.target === waitlistModal) {
+        closeWaitlistModal();
+      }
+    });
     
     // Handle waitlist form submission
     const waitlistForm = document.getElementById('waitlistForm')
@@ -418,196 +407,56 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify({ email })
           })
-          .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
-            return response.json();
-          })
+          .then(response => response.json())
           .then(data => {
-            console.log('Success:', data);
-            
-            // Get the entire modal container to replace its content
-            const modalContainer = document.querySelector('.modal-container');
-            const modalImage = document.querySelector('.modal-image');
-            
-            // Remove the side column if it exists
-            if (modalImage) {
-              modalImage.style.display = 'none';
-            }
-            
-            // Create CSS for the animation
-            const style = document.createElement('style');
-            style.textContent = `
-              @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
-              }
+            if (data.success) {
+              // Mark user as registered
+              localStorage.setItem('waitlistRegistered', 'true');
               
-              @keyframes checkmark {
-                0% { 
-                  stroke-dashoffset: 100; 
-                  opacity: 0;
-                }
-                30% {
-                  opacity: 1;
-                }
-                100% {
-                  stroke-dashoffset: 0;
-                  opacity: 1;
-                }
-              }
-              
-              .success-animation {
-                text-align: center;
-                padding: 3rem 2rem;
-                animation: fadeIn 0.6s ease-out forwards;
-                width: 100%;
-                box-sizing: border-box;
-              }
-              
-              .checkmark-circle {
-                width: 120px;
-                height: 120px;
-                position: relative;
-                margin: 0 auto 1.5rem;
-              }
-              
-              .checkmark-circle-bg {
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                background-color: rgba(10, 124, 46, 0.1);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              }
-              
-              .checkmark {
-                width: 70px;
-                height: 70px;
-              }
-              
-              .checkmark path {
-                stroke-dasharray: 100;
-                stroke-dashoffset: 100;
-                animation: checkmark 1s ease-in-out forwards;
-                animation-delay: 0.2s;
-              }
-              
-              .success-message {
-                font-size: 2.4rem;
-                font-weight: 800;
-                color: #0a7c2e;
-                margin-bottom: 1.2rem;
-                opacity: 0;
-                animation: fadeIn 0.6s ease-out forwards;
-                animation-delay: 0.5s;
-                line-height: 1.2;
-              }
-              
-              .success-description {
-                opacity: 0;
-                animation: fadeIn 0.6s ease-out forwards;
-                animation-delay: 0.8s;
-                margin-bottom: 2rem;
-                font-size: 1.1rem;
-                max-width: 400px;
-                margin-left: auto;
-                margin-right: auto;
-                line-height: 1.5;
-              }
-              
-              .success-animation button {
-                opacity: 0;
-                animation: fadeIn 0.6s ease-out forwards;
-                animation-delay: 1.1s;
-                padding: 12px 30px;
-                font-size: 1.1rem;
-              }
-              
-              /* Ensure content takes full width of modal */
-              .modal-content {
-                width: 100%;
-                flex: 1;
-              }
-              
-              /* Responsive adjustments */
-              @media (max-width: 768px) {
-                .success-message {
-                  font-size: 1.8rem;
-                }
-                
-                .success-description {
-                  font-size: 1rem;
-                }
-                
-                .checkmark-circle {
-                  width: 100px;
-                  height: 100px;
-                }
-                
-                .checkmark-circle-bg {
-                  width: 100px;
-                  height: 100px;
-                }
-                
-                .checkmark {
-                  width: 60px;
-                  height: 60px;
-                }
-              }
-            `;
-            document.head.appendChild(style);
-            
-            // Clear the form
-            waitlistForm.reset();
-            
-            // Replace modal content with thank you message
-            const modalContent = waitlistForm.closest('.modal-content');
-            modalContent.innerHTML = `
-              <div class="success-animation">
-                <div class="checkmark-circle">
-                  <div class="checkmark-circle-bg">
-                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                      <path fill="none" stroke="#0a7c2e" stroke-width="3" d="M14,27 L22,35 L38,17" />
-                    </svg>
+              // Show success message
+              const modalContent = waitlistForm.closest('.modal-content');
+              modalContent.innerHTML = `
+                <div class="success-animation">
+                  <div class="checkmark-circle">
+                    <div class="checkmark-circle-bg">
+                      <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                        <path fill="none" stroke="#0a7c2e" stroke-width="3" d="M14,27 L22,35 L38,17" />
+                      </svg>
+                    </div>
                   </div>
+                  <div class="success-message">+1 😍 Welcome to the waitlist!</div>
+                  <p class="success-description">We've sent you a confirmation email. Thank you for your interest in Schoolpast.ng!</p>
+                  <button class="button primary-button" id="closeSuccessModal">Got it</button>
                 </div>
-                <div class="success-message">+1 😍 Welcome to the waitlist!</div>
-                <p class="success-description">We've sent you a confirmation email. Thank you for your interest in Schoolpast.ng!</p>
-                <button class="button primary-button" id="closeSuccessModal">Got it</button>
-              </div>
-            `;
-            
-            // Ensure modal content takes full width
-            modalContent.style.width = '100%';
-            
-            // Add event listener to the close button
-            const closeSuccessButton = document.getElementById('closeSuccessModal');
-            if (closeSuccessButton) {
-              closeSuccessButton.addEventListener('click', function() {
-                const waitlistModal = document.getElementById('waitlistModal');
-                if (waitlistModal) {
-                  waitlistModal.classList.remove('active');
-                  document.body.style.overflow = ''; // Restore scrolling
-                }
-              });
+              `;
+              
+              // Add event listener to close button
+              const closeSuccessButton = document.getElementById('closeSuccessModal');
+              if (closeSuccessButton) {
+                closeSuccessButton.addEventListener('click', closeWaitlistModal);
+              }
+              
+              // Close modal after 3 seconds
+              setTimeout(closeWaitlistModal, 3000);
+            } else {
+              // Handle error
+              submitButton.textContent = originalText;
+              submitButton.disabled = false;
+              
+              let errorMsg = waitlistForm.querySelector('.form-error-message');
+              if (!errorMsg) {
+                errorMsg = document.createElement('div');
+                errorMsg.className = 'form-error-message';
+                waitlistForm.appendChild(errorMsg);
+              }
+              errorMsg.textContent = data.message || 'There was an error submitting your email. Please try again.';
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            // Log more details about the error
-            console.error('Error details:', {
-              message: error.message,
-              stack: error.stack,
-              type: error.constructor.name
-            });
-            
-            // Handle errors - restore the button and show an error message
             submitButton.textContent = originalText;
             submitButton.disabled = false;
             
-            // Display error message
             let errorMsg = waitlistForm.querySelector('.form-error-message');
             if (!errorMsg) {
               errorMsg = document.createElement('div');
@@ -628,40 +477,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     }
-    
-    // Add "Join Waitlist" button to the main CTA section if not present
-    const ctaSections = document.querySelectorAll('.cta, .get-started')
-    
-    ctaSections.forEach(section => {
-      // Check if there's already a waitlist-specific button
-      const existingWaitlistBtn = section.querySelector('[data-open-waitlist="true"]')
-      
-      if (!existingWaitlistBtn) {
-        // Look for standard CTA buttons
-        const ctaButton = section.querySelector('.cta-button')
-        
-        if (ctaButton && ctaButton.textContent.includes('Get Started')) {
-          // Create a new "Join Waitlist" button
-          const waitlistButton = document.createElement('a')
-          waitlistButton.href = '#'
-          waitlistButton.className = 'button outline-button waitlist-button'
-          waitlistButton.setAttribute('data-open-waitlist', 'true')
-          waitlistButton.textContent = 'Join Waitlist'
-          waitlistButton.style.marginLeft = '1rem'
-          
-          // Add event listener to open modal
-          waitlistButton.addEventListener('click', (e) => {
-            e.preventDefault()
-            openWaitlistModal()
-          })
-          
-          // Insert after the CTA button
-          ctaButton.parentNode.insertBefore(waitlistButton, ctaButton.nextSibling)
-        }
-      }
-    })
   }
-})
+});
 
 // Nigerian universities list (you'll need to populate this from your CSV)
 // This could also be loaded from an external file
