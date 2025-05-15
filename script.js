@@ -300,9 +300,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Function to hide modal
-    const hideModal = () => {
-      waitlistModal.classList.remove('active');
-      document.body.style.overflow = '';
+    window.hideModal = () => {
+      const waitlistModal = document.getElementById('waitlistModal');
+      if (waitlistModal) {
+        waitlistModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
     };
 
     // Close button functionality
@@ -321,17 +324,66 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle form submission
     const waitlistForm = document.getElementById('waitlistForm');
     if (waitlistForm) {
-      waitlistForm.addEventListener('submit', (e) => {
+      waitlistForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const emailInput = document.getElementById('waitlist-email');
         const email = emailInput.value.trim();
+        const submitButton = waitlistForm.querySelector('button[type="submit"]');
+        const modalContent = document.querySelector('.modal-content');
 
-        // Check if email is already registered
-        if (email === registeredEmail) {
+        // Disable the submit button and show loading state
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Joining...';
+
+        try {
+          const response = await fetch('/api/waitlist', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Show success message
+            modalContent.innerHTML = `
+              <div class="modal-header">
+                <h2>🎉 Welcome Aboard!</h2>
+              </div>
+              <div class="modal-success">
+                <p>Thank you for joining our waitlist! We've sent you a confirmation email.</p>
+                <p>Check your inbox for more details about what's coming.</p>
+                <button onclick="hideModal()" class="button primary-button full-width">Close</button>
+              </div>
+            `;
+            
+            // Store in localStorage to prevent duplicate signups
+            localStorage.setItem('waitlistRegistered', 'true');
+            localStorage.setItem('registeredEmail', email);
+          } else {
+            // Show error message in the form
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'form-error-message';
+            errorDiv.textContent = data.message || 'Something went wrong. Please try again.';
+            
+            // Remove any existing error message
+            const existingError = waitlistForm.querySelector('.form-error-message');
+            if (existingError) {
+              existingError.remove();
+            }
+            
+            waitlistForm.insertBefore(errorDiv, submitButton);
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'Join Waitlist';
+          }
+        } catch (error) {
+          console.error('Error:', error);
           // Show error message
           const errorDiv = document.createElement('div');
           errorDiv.className = 'form-error-message';
-          errorDiv.textContent = 'This email is already registered for the waitlist!';
+          errorDiv.textContent = 'Network error. Please try again.';
           
           // Remove any existing error message
           const existingError = waitlistForm.querySelector('.form-error-message');
@@ -339,17 +391,10 @@ document.addEventListener('DOMContentLoaded', () => {
             existingError.remove();
           }
           
-          waitlistForm.appendChild(errorDiv);
-          return;
+          waitlistForm.insertBefore(errorDiv, submitButton);
+          submitButton.disabled = false;
+          submitButton.innerHTML = 'Join Waitlist';
         }
-
-        // Simulate API call/registration
-        localStorage.setItem('waitlistRegistered', 'true');
-        localStorage.setItem('registeredEmail', email);
-        
-        // Show success message and close modal
-        alert('Successfully joined the waitlist!');
-        hideModal();
       });
     }
 
