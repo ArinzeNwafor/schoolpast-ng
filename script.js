@@ -250,11 +250,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // Show success message
             modalContent.innerHTML = `
               <div class="modal-header">
-                <h2>🎉 Welcome Aboard!</h2>
+                <h2>${data.message === 'You are already on our waitlist' ? 'Already Registered!' : '🎉 Welcome Aboard!'}</h2>
               </div>
               <div class="modal-success">
-                <p>Thank you for joining our waitlist! We've sent you a confirmation email.</p>
-                <p>Check your inbox for more details about what's coming.</p>
+                <p>${data.message === 'You are already on our waitlist' 
+                  ? 'You\'re already on our waitlist! We\'ll notify you when we launch.'
+                  : 'Thank you for joining our waitlist! We\'ve sent you a confirmation email.'}</p>
+                <p>${data.message === 'You are already on our waitlist' 
+                  ? 'Stay tuned for updates and exciting announcements!'
+                  : 'Check your inbox for more details about what\'s coming.'}</p>
                 <button onclick="hideModal()" class="button primary-button full-width">Close</button>
               </div>
             `;

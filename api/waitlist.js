@@ -29,40 +29,6 @@ export default async function handler(req, res) {
     
     // Check if email already exists
     if (emailList.includes(email)) {
-      // Send "already registered" email
-      const alreadyRegisteredMsg = {
-        to: email,
-        from: {
-          email: process.env.SENDER_EMAIL || 'noreply@schoolpast.ng',
-          name: 'Arinze from Schoolpast.ng'
-        },
-        subject: "You're Already on Our Waitlist!",
-        html: `
-          <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <img src="https://schoolpast-ng.vercel.app/schoolpastlogo.png" alt="SchoolPast.ng Logo" style="max-width: 150px; display: block; margin: 0 auto 20px;">
-            <h1 style="color: #0a7c2e; text-align: center; margin-bottom: 20px;">You're Already on Our List!</h1>
-            <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-              Thanks for your enthusiasm! We noticed you're already registered on our waitlist.
-            </p>
-            <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-              Don't worry - we haven't forgotten about you! You'll still be among the first to know when we launch.
-            </p>
-            <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-              Stay tuned for updates and exciting announcements!
-            </p>
-            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-              <p style="font-size: 14px; margin: 0; text-align: center; color: #555;">
-                If you didn't try to sign up for the SchoolPast.ng waitlist, please ignore this email.
-              </p>
-            </div>
-            <p style="font-size: 14px; text-align: center; color: #777; margin-top: 40px;">
-              © ${new Date().getFullYear()} SchoolPast.ng. All rights reserved.
-            </p>
-          </div>
-        `
-      };
-
-      await sgMail.send(alreadyRegisteredMsg);
       return res.status(200).json({ 
         success: true, 
         message: 'You are already on our waitlist'
