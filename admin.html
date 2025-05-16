@@ -10,6 +10,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
+        :root {
+            --primary-dark: #0a7c2e;
+            --primary-medium: #0d9c3a;
+            --background-light: #f8f9fa;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border-color: #dee2e6;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
         .admin-container {
             max-width: 800px;
             margin: 2rem auto;
@@ -17,6 +36,7 @@
             background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
+            position: relative;
         }
         
         .admin-header {
@@ -155,7 +175,7 @@
             <div class="admin-header">
                 <h1>Admin Login</h1>
                 <p>Enter your admin API key to continue</p>
-                </div>
+            </div>
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="apiKey">Admin API Key</label>
@@ -163,7 +183,7 @@
                 </div>
                 <button type="submit" class="login-button">Login</button>
                 <div id="loginError" class="error-message"></div>
-        </form>
+            </form>
         </div>
         
         <!-- Admin Dashboard -->
@@ -176,16 +196,16 @@
             
             <div class="admin-content">
                 <div class="stats-grid">
-            <div class="stat-card">
+                    <div class="stat-card">
                         <div class="stat-number" id="totalSubscribers">-</div>
                         <div class="stat-label">Total Subscribers</div>
-            </div>
-            <div class="stat-card">
+                    </div>
+                    <div class="stat-card">
                         <div class="stat-number" id="todaySubscribers">-</div>
                         <div class="stat-label">New Today</div>
-            </div>
-        </div>
-        
+                    </div>
+                </div>
+                
                 <div style="text-align: center;">
                     <button class="export-button" onclick="exportWaitlist()">Export Waitlist to CSV</button>
                     <div id="errorMessage" class="error-message"></div>
