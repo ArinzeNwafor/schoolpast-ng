@@ -54,9 +54,11 @@
                 <div class="about-content">
                     <h2>Our Story</h2>
                     <!-- <p>Schoolpast.ng was founded with a vision to revolutionize the educational experience for Nigerian students through technology, community, and transparency.</p> -->
-                    <p><b>Schoolpast.ng</b> is Nigeria's first all-in-one student life platform — a digital space built to amplify the voice of students and improve accountability across educational institutions. Our mission is simple: <b>empower students, expose inefficiencies, and create a supportive academic ecosystem.</b></p>
+                    <p><b>Schoolpast.ng</b> is Nigeria's first "all-in-one" student life platform — a digital space built to amplify the voice of students and improve accountability across educational institutions. Our mission is simple: <b>empower students, expose inefficiencies, and create a supportive academic ecosystem.</b></p>
                     <p>After witnessing firsthand the challenges faced by students across Nigeria, from limited access to quality educational materials to inadequate financial support, we set out to create a comprehensive solution that addresses these issues.</p>
-                    <p>Today, Schoolpast.ng stands as an innovative digital platform designed to serve as the voice and hub for Nigerian students, amalgamating educational resources, social networking, institutional feedback mechanisms, and financial aid opportunities into a single, user-friendly application.</p>
+                    <p>Today, <b>Schoolpast.ng</b> stands as an innovative digital platform designed to serve as the voice and hub for Nigerian students, amalgamating educational resources, social networking, institutional feedback mechanisms, and financial aid opportunities into a single, user-friendly application.</p>
+                    <p><b>Schoolpast.ng</b> is more than a platform — it's a movement for change, driven by the people who live the student life every day.</p>
+
                 </div>
                 <div class="about-image" style="width: 100%; max-width: 800px; margin: 0 auto;">
                     <svg width="100%" height="auto" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block;">
@@ -136,21 +138,23 @@
                 <div class="problem-card">
                     <h2>The Problem</h2>
                     <p>Nigerian students face challenges such as:</p>
-                    <ul>
-                        <li>Limited access to quality educational materials</li>
-                        <li>Lack of platforms to voice concerns</li>
-                        <li>Inadequate financial support</li>
-                        <li>Minimal engagement with institutional policies</li>
+                    <ul class="fine-list">
+                        <li><span class="bullet">•</span> Limited access to quality educational materials and resources</li>
+                        <li><span class="bullet">•</span> Lack of effective platforms to voice concerns and feedback</li>
+                        <li><span class="bullet">•</span> Inadequate financial support and scholarship opportunities</li>
+                        <li><span class="bullet">•</span> Minimal engagement with institutional policies and decisions</li>
+                        <li><span class="bullet">•</span> Disconnected student communities across institutions</li>
                     </ul>
                 </div>
                 <div class="solution-card">
                     <h2>Our Solution</h2>
                     <p>Schoolpast.ng addresses these issues by providing:</p>
-                    <ul>
-                        <li>Access to past examination questions and study materials</li>
-                        <li>A social platform for student interaction and expression</li>
-                        <li>Mechanisms to report institutional issues and rate staff</li>
-                        <li>Opportunities for scholarships, donations, and financial aid</li>
+                    <ul class="fine-list">
+                        <li><span class="bullet">•</span> Comprehensive access to past examination questions and study materials</li>
+                        <li><span class="bullet">•</span> A vibrant social platform for student interaction and expression</li>
+                        <li><span class="bullet">•</span> Transparent mechanisms to report issues and rate institutional staff</li>
+                        <li><span class="bullet">•</span> Direct opportunities for scholarships, donations, and financial aid</li>
+                        <li><span class="bullet">•</span> A unified network connecting students across Nigeria</li>
                     </ul>
                 </div>
             </div>
@@ -465,6 +469,47 @@
         @media (max-width: 480px) {
             .about-image {
                 padding: 5px;
+            }
+        }
+
+        .fine-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 1.5rem 0;
+        }
+
+        .fine-list li {
+            position: relative;
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #4a5568;
+        }
+
+        .fine-list .bullet {
+            position: absolute;
+            left: 0;
+            color: #0A7C2E;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .problem-card .fine-list li {
+            border-left: 2px solid rgba(10, 124, 46, 0.1);
+            margin-left: 0.5rem;
+            padding-left: 1.8rem;
+        }
+
+        .solution-card .fine-list li {
+            border-left: 2px solid rgba(10, 124, 46, 0.2);
+            margin-left: 0.5rem;
+            padding-left: 1.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .fine-list li {
+                font-size: 0.9rem;
+                padding: 0.4rem 0 0.4rem 1.3rem;
             }
         }
     </style>
