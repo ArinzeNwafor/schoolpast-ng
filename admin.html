@@ -18,7 +18,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
         }
-
+        
         .admin-header {
             margin-bottom: 2rem;
             text-align: center;
@@ -39,7 +39,7 @@
             gap: 1rem;
             margin-bottom: 2rem;
         }
-
+        
         .stat-card {
             background: var(--background-light);
             padding: 1.5rem;
@@ -69,52 +69,196 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-
+        
         .export-button:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
         }
-
+        
         .error-message {
             color: #dc3545;
             margin-top: 1rem;
             text-align: center;
         }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--background-light);
+            border-radius: var(--border-radius);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary-medium);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: #c82333;
+        }
     </style>
 </head>
 <body>
     <div class="admin-container">
-        <div class="admin-header">
-            <h1>Admin Dashboard</h1>
-            <p>Manage your waitlist data</p>
+        <!-- Login Form -->
+        <div id="loginSection" class="login-form">
+            <div class="admin-header">
+                <h1>Admin Login</h1>
+                <p>Enter your admin API key to continue</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="apiKey">Admin API Key</label>
+                    <input type="password" id="apiKey" required>
+                </div>
+                <button type="submit" class="login-button">Login</button>
+                <div id="loginError" class="error-message"></div>
+            </form>
         </div>
 
-        <div class="admin-content">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalSubscribers">-</div>
-                    <div class="stat-label">Total Subscribers</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="todaySubscribers">-</div>
-                    <div class="stat-label">New Today</div>
-                </div>
+        <!-- Admin Dashboard -->
+        <div id="dashboardSection" class="hidden">
+            <button class="logout-button" onclick="handleLogout()">Logout</button>
+            <div class="admin-header">
+                <h1>Admin Dashboard</h1>
+                <p>Manage your waitlist data</p>
             </div>
+            
+            <div class="admin-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalSubscribers">-</div>
+                        <div class="stat-label">Total Subscribers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todaySubscribers">-</div>
+                        <div class="stat-label">New Today</div>
+                    </div>
+                </div>
 
-            <div style="text-align: center;">
-                <button class="export-button" onclick="exportWaitlist()">Export Waitlist to CSV</button>
-                <div id="errorMessage" class="error-message"></div>
+                <div style="text-align: center;">
+                    <button class="export-button" onclick="exportWaitlist()">Export Waitlist to CSV</button>
+                    <div id="errorMessage" class="error-message"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Check if user is already logged in
+        function checkAuth() {
+            const apiKey = localStorage.getItem('adminApiKey');
+            if (apiKey) {
+                showDashboard();
+                updateStats();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Handle login
+        async function handleLogin(event) {
+            event.preventDefault();
+            const apiKey = document.getElementById('apiKey').value;
+            const errorElement = document.getElementById('loginError');
+
+            try {
+                // Test the API key
+                const response = await fetch('/api/waitlist', {
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Invalid API key');
+                }
+
+                // Store API key and show dashboard
+                localStorage.setItem('adminApiKey', apiKey);
+                showDashboard();
+                updateStats();
+            } catch (error) {
+                console.error('Login error:', error);
+                errorElement.textContent = 'Invalid API key. Please try again.';
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            localStorage.removeItem('adminApiKey');
+            showLogin();
+        }
+
+        // Show login form
+        function showLogin() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+        }
+
         // Function to export waitlist data
         async function exportWaitlist() {
             try {
+                const apiKey = localStorage.getItem('adminApiKey');
                 const response = await fetch('/api/waitlist', {
                     headers: {
-                        'Authorization': `Bearer ${prompt('Please enter your admin API key:')}`
+                        'Authorization': `Bearer ${apiKey}`
                     }
                 });
 
@@ -140,16 +284,17 @@
                 document.getElementById('errorMessage').textContent = '';
             } catch (error) {
                 console.error('Export error:', error);
-                document.getElementById('errorMessage').textContent = 'Failed to export waitlist data. Please check your API key and try again.';
+                document.getElementById('errorMessage').textContent = 'Failed to export waitlist data. Please try logging in again.';
             }
         }
 
         // Function to update stats
         async function updateStats() {
             try {
+                const apiKey = localStorage.getItem('adminApiKey');
                 const response = await fetch('/api/waitlist', {
                     headers: {
-                        'Authorization': `Bearer ${prompt('Please enter your admin API key:')}`
+                        'Authorization': `Bearer ${apiKey}`
                     }
                 });
 
@@ -176,12 +321,12 @@
                 document.getElementById('errorMessage').textContent = '';
             } catch (error) {
                 console.error('Stats update error:', error);
-                document.getElementById('errorMessage').textContent = 'Failed to update stats. Please check your API key and try again.';
+                document.getElementById('errorMessage').textContent = 'Failed to update stats. Please try logging in again.';
             }
         }
 
-        // Update stats when page loads
-        updateStats();
+        // Check authentication when page loads
+        checkAuth();
     </script>
 </body>
 </html> 
