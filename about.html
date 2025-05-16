@@ -57,8 +57,8 @@
                     <p>After witnessing firsthand the challenges faced by students across Nigeria, from limited access to quality educational materials to inadequate financial support, Arinze set out to create a comprehensive solution that addresses these issues.</p>
                     <p>Today, Schoolpast.ng stands as an innovative digital platform designed to serve as the voice and hub for Nigerian students, amalgamating educational resources, social networking, institutional feedback mechanisms, and financial aid opportunities into a single, user-friendly application.</p>
                 </div>
-                <div class="about-image">
-                    <svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="about-image" style="width: 100%; max-width: 800px; margin: 0 auto;">
+                    <svg width="100%" height="auto" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block;">
                         <!-- Modern Education Platform 3D Illustration -->
                         <!-- Background Elements -->
                         <defs>
@@ -438,5 +438,34 @@
     </div>
 
     <script src="script.js"></script>
+
+    <style>
+        /* Add these styles to your existing CSS */
+        .about-image {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .about-image svg {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .about-image {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-image {
+                padding: 5px;
+            }
+        }
+    </style>
 </body>
 </html>
