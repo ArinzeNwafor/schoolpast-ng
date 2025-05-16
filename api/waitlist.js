@@ -26,11 +26,14 @@ export default async function handler(req, res) {
     // Send confirmation email using SendGrid
     const msg = {
       to: email,
-      from: process.env.SENDER_EMAIL || 'noreply@schoolpast.ng',
+      from: {
+        email: process.env.SENDER_EMAIL || 'noreply@schoolpast.ng',
+        name: 'Arinze from Schoolpast.ng'
+      },
       subject: "🎉 You're IN! Your Journey with SchoolPast.ng Begins Now!",
       html: `
         <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <img src="https://github.com/ArinzeNwafor/schoolpast-ng/blob/main/schoolpastlogo.png" alt="SchoolPast.ng Logo" style="max-width: 150px; display: block; margin: 0 auto 20px;">
+          <img src="https://schoolpast-ng.vercel.app/schoolpastlogo.png" alt="SchoolPast.ng Logo" style="max-width: 150px; display: block; margin: 0 auto 20px;">
           <h1 style="color: #0a7c2e; text-align: center; margin-bottom: 20px;">You're on the waitlist!</h1>
           <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
             Thank you for joining the SchoolPast.ng waitlist! We're excited to have you on board.
