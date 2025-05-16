@@ -8,8 +8,7 @@
     "deploy": "vercel deploy"
   },
   "dependencies": {
-    "@sendgrid/mail": "^7.7.0",
-    "googleapis": "^129.0.0"
+    "@sendgrid/mail": "^7.7.0"
   },
   "devDependencies": {
     "vercel": "^32.0.0"
