@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitButton.innerHTML = 'Joining...';
 
         try {
-          const response = await fetch('/api/waitlist', {
+          const response = await fetch('/api/waitlist.js', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -279,7 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
             submitButton.innerHTML = 'Join Waitlist';
           }
         } catch (error) {
-          console.error('Error:', error);
+          console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            type: error.name
+          });
           // Show error message
           const errorDiv = document.createElement('div');
           errorDiv.className = 'form-error-message';
