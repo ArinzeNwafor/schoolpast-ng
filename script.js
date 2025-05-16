@@ -11,7 +11,7 @@ window.addEventListener("scroll", () => {
   }
 })
 
-// Mobile menu toggle - improved version
+// Mobile menu toggle
 const mobileMenuButton = document.querySelector(".mobile-menu-button")
 if (mobileMenuButton) {
   mobileMenuButton.addEventListener("click", () => {
@@ -85,144 +85,10 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       const mobileMenu = document.querySelector(".mobile-menu")
       if (mobileMenu && mobileMenu.classList.contains("active")) {
         mobileMenu.classList.remove("active")
-
         const spans = document.querySelectorAll(".mobile-menu-button span")
         spans.forEach((span) => span.classList.remove("active"))
       }
     }
-  })
-})
-
-// Form submission (placeholder)
-const searchBox = document.querySelector(".search-box")
-if (searchBox) {
-  const searchButton = searchBox.querySelector(".search-button")
-  const searchInput = searchBox.querySelector("input")
-
-  searchButton.addEventListener("click", () => {
-    const schoolName = searchInput.value.trim()
-    if (schoolName) {
-      alert(`You searched for: ${schoolName}`)
-      // In a real application, you would handle the form submission here
-    } else {
-      alert("Please enter a school name")
-    }
-  })
-
-  // Allow form submission with Enter key
-  searchInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      searchButton.click()
-    }
-  })
-}
-
-// Password toggle
-const passwordToggles = document.querySelectorAll(".password-toggle")
-passwordToggles.forEach((toggle) => {
-  toggle.addEventListener("click", () => {
-    const passwordInput = toggle.previousElementSibling
-    const type = passwordInput.getAttribute("type") === "password" ? "text" : "password"
-    passwordInput.setAttribute("type", type)
-
-    // Change icon
-    const svg = toggle.querySelector("svg")
-    if (type === "text") {
-      svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
-    } else {
-      svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>'
-    }
-  })
-})
-
-// Form validation for auth pages
-const authForms = document.querySelectorAll('.auth-form')
-authForms.forEach(form => {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault()
-    
-    let isValid = true
-    const inputs = form.querySelectorAll('input[required]')
-    
-    inputs.forEach(input => {
-      if (!input.value.trim()) {
-        isValid = false
-        input.classList.add('error')
-        
-        // Create error message if it doesn't exist
-        let errorMsg = input.parentElement.querySelector('.error-message')
-        if (!errorMsg) {
-          errorMsg = document.createElement('div')
-          errorMsg.className = 'error-message'
-          input.parentElement.appendChild(errorMsg)
-        }
-        errorMsg.textContent = `${input.placeholder.replace('Enter your ', '').replace('Create a ', '')} is required`
-      } else {
-        input.classList.remove('error')
-        const errorMsg = input.parentElement.querySelector('.error-message')
-        if (errorMsg) errorMsg.remove()
-      }
-    })
-    
-    // Email validation
-    const emailInput = form.querySelector('input[type="email"]')
-    if (emailInput && emailInput.value) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(emailInput.value)) {
-        isValid = false
-        emailInput.classList.add('error')
-        
-        let errorMsg = emailInput.parentElement.querySelector('.error-message')
-        if (!errorMsg) {
-          errorMsg = document.createElement('div')
-          errorMsg.className = 'error-message'
-          emailInput.parentElement.appendChild(errorMsg)
-        }
-        errorMsg.textContent = 'Please enter a valid email address'
-      }
-    }
-    
-    // Password validation
-    const passwordInput = form.querySelector('input[type="password"]')
-    if (passwordInput && passwordInput.value && passwordInput.id === 'password' && form.closest('.auth-card').querySelector('h1').textContent.includes('Create')) {
-      if (passwordInput.value.length < 8) {
-        isValid = false
-        passwordInput.classList.add('error')
-        
-        let errorMsg = passwordInput.parentElement.querySelector('.error-message')
-        if (!errorMsg) {
-          errorMsg = document.createElement('div')
-          errorMsg.className = 'error-message'
-          passwordInput.parentElement.appendChild(errorMsg)
-        }
-        errorMsg.textContent = 'Password must be at least 8 characters'
-      }
-    }
-    
-    if (isValid) {
-      // Simulate form submission with a loading state
-      const submitButton = form.querySelector('button[type="submit"]')
-      const originalText = submitButton.textContent
-      submitButton.textContent = 'Loading...'
-      submitButton.disabled = true
-      
-      setTimeout(() => {
-        submitButton.textContent = originalText
-        submitButton.disabled = false
-        alert('Form submitted successfully!')
-        // Redirect to dashboard in real implementation
-        window.location.href = 'index.html'
-      }, 1500)
-    }
-  })
-  
-  // Clear errors on input change
-  form.querySelectorAll('input').forEach(input => {
-    input.addEventListener('input', function() {
-      input.classList.remove('error')
-      const errorMsg = input.parentElement.querySelector('.error-message')
-      if (errorMsg) errorMsg.remove()
-    })
   })
 })
 
@@ -255,6 +121,171 @@ if (backToTopButton) {
     })
   })
 }
+
+// University Search Autocomplete
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM Content Loaded - Initializing university search');
+  
+  const searchBox = document.querySelector('.search-box');
+  if (!searchBox) {
+    console.error('Search box not found');
+    return;
+  }
+  console.log('Search box found');
+
+  const searchInput = searchBox.querySelector('input');
+  if (!searchInput) {
+    console.error('Search input not found');
+    return;
+  }
+  console.log('Search input found');
+
+  // Create dropdown container
+  const dropdownContainer = document.createElement('div');
+  dropdownContainer.className = 'search-dropdown';
+  searchBox.appendChild(dropdownContainer);
+  console.log('Dropdown container created');
+
+  // Load universities from CSV file
+  console.log('Fetching universities from CSV');
+  fetch('nigerian_universities.csv')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log('CSV file fetched successfully');
+      return response.text();
+    })
+    .then(data => {
+      console.log('CSV data received, parsing...');
+      // Parse CSV data
+      const universities = data.split('\n')
+        .map(line => line.trim())
+        .filter(line => line && !line.startsWith('#'));
+
+      console.log(`Found ${universities.length} universities`);
+
+      // Remove header row if it exists
+      if (universities.length > 0 && 
+          (universities[0].toLowerCase().includes('university') || 
+           universities[0].toLowerCase().includes('name'))) {
+        universities.shift();
+      }
+  
+      // Handle input changes
+      searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        console.log('Search input changed:', query);
+    
+        // Clear dropdown
+        dropdownContainer.innerHTML = '';
+    
+        if (query.length < 2) {
+          dropdownContainer.classList.remove('active');
+          return;
+        }
+    
+        // Filter universities based on query
+        const matches = universities.filter(school => 
+          school.toLowerCase().includes(query)
+        ).slice(0, 5); // Limit to 5 results
+        
+        console.log(`Found ${matches.length} matches for query: ${query}`);
+    
+        if (matches.length === 0) {
+          dropdownContainer.classList.remove('active');
+          return;
+        }
+    
+        // Create dropdown items
+        matches.forEach(school => {
+          const item = document.createElement('div');
+          item.className = 'dropdown-item';
+      
+          // Highlight the matching part
+          const highlightedText = school.replace(
+            new RegExp(query, 'gi'),
+            match => `<strong>${match}</strong>`
+          );
+      
+          item.innerHTML = highlightedText;
+      
+          // Handle click on dropdown item
+          item.addEventListener('click', function() {
+            searchInput.value = school;
+            dropdownContainer.classList.remove('active');
+            dropdownContainer.innerHTML = ''; // Clear dropdown after selection
+          });
+      
+          dropdownContainer.appendChild(item);
+        });
+    
+        // Show dropdown
+        dropdownContainer.classList.add('active');
+        console.log('Dropdown should be visible now');
+      });
+  
+      // Handle focus events
+      searchInput.addEventListener('focus', function() {
+        const query = this.value.toLowerCase().trim();
+        if (query.length >= 2) {
+          // Trigger the input event to show suggestions
+          this.dispatchEvent(new Event('input'));
+        }
+      });
+  
+      // Handle click outside
+      document.addEventListener('click', function(e) {
+        if (!searchBox.contains(e.target)) {
+          dropdownContainer.classList.remove('active');
+        }
+      });
+  
+      // Handle keyboard navigation
+      searchInput.addEventListener('keydown', function(e) {
+        const items = dropdownContainer.querySelectorAll('.dropdown-item');
+        if (!items.length) return;
+    
+        const active = dropdownContainer.querySelector('.dropdown-item.active');
+        const activeIndex = Array.from(items).indexOf(active);
+    
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            if (active) {
+              items[activeIndex].classList.remove('active');
+              items[(activeIndex + 1) % items.length].classList.add('active');
+            } else {
+              items[0].classList.add('active');
+            }
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            if (active) {
+              items[activeIndex].classList.remove('active');
+              items[activeIndex === 0 ? items.length - 1 : activeIndex - 1].classList.add('active');
+            } else {
+              items[items.length - 1].classList.add('active');
+            }
+            break;
+          case 'Enter':
+            if (active) {
+              e.preventDefault();
+              searchInput.value = active.textContent.replace(/<\/?strong>/g, ''); // Remove HTML tags
+              dropdownContainer.classList.remove('active');
+              dropdownContainer.innerHTML = ''; // Clear dropdown after selection
+            }
+            break;
+          case 'Escape':
+            dropdownContainer.classList.remove('active');
+            break;
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error loading universities:', error);
+    });
+});
 
 // Waitlist Modal functionality
 document.addEventListener('DOMContentLoaded', () => {
@@ -402,577 +433,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
-
-// Nigerian universities list (you'll need to populate this from your CSV)
-// This could also be loaded from an external file
-const nigerianUniversities = [
-  "University of Lagos",
-  "University of Ibadan",
-  "Ahmadu Bello University",
-  "University of Nigeria, Nsukka",
-  "University of Benin",
-  "Obafemi Awolowo University",
-  "University of Ilorin",
-  "University of Port Harcourt",
-  "Covenant University",
-  "Federal University of Technology, Akure",
-  "Federal University of Technology, Minna",
-  "Federal University of Technology, Owerri",
-  "Bayero University Kano",
-  "Lagos State University",
-  "Nnamdi Azikiwe University",
-  // Add all your universities from the CSV here
-];
-
-// CSV Loading Function (if you prefer to load the CSV directly)
-function loadSchoolsFromCSV() {
-  // This assumes you have a CSV file named "nigerian_universities.csv" in your project
-  fetch('nigerian_universities.csv')
-    .then(response => response.text())
-    .then(data => {
-      // Parse CSV and convert to array
-      const schools = data.split('\n').map(line => line.trim()).filter(line => line);
-      // Remove header row if present
-      if (schools.length > 0 && schools[0].includes('University') || schools[0].includes('Name')) {
-        schools.shift();
-      }
-      initAutocomplete(schools);
-    })
-    .catch(error => {
-      console.error('Error loading schools CSV:', error);
-      // Fall back to the hardcoded list if CSV fails to load
-      initAutocomplete(nigerianUniversities);
-    });
-}
-
-// Function to initialize autocomplete
-function initAutocomplete(schools) {
-  const searchInput = document.querySelector('.search-box input');
-  if (!searchInput) return;
-  
-  // Create dropdown container - append it to the search-box for proper mobile positioning
-  const dropdownContainer = document.createElement('div');
-  dropdownContainer.className = 'search-dropdown';
-  searchInput.parentNode.appendChild(dropdownContainer);
-  
-  // Handle input changes
-  searchInput.addEventListener('input', function() {
-    const query = this.value.toLowerCase().trim();
-    
-    // Clear dropdown
-    dropdownContainer.innerHTML = '';
-    
-    if (query.length < 2) {
-      dropdownContainer.classList.remove('active');
-      return;
-    }
-    
-    // Filter universities based on query
-    const matches = schools.filter(school => 
-      school.toLowerCase().includes(query)
-    ).slice(0, 5); // Limit to 5 results
-    
-    if (matches.length === 0) {
-      dropdownContainer.classList.remove('active');
-      return;
-    }
-    
-    // Create dropdown items
-    matches.forEach(school => {
-      const item = document.createElement('div');
-      item.className = 'dropdown-item';
-      
-      // Highlight the matching part
-      const highlightedText = school.replace(
-        new RegExp(query, 'gi'),
-        match => `<strong>${match}</strong>`
-      );
-      
-      item.innerHTML = highlightedText;
-      
-      // Handle click on dropdown item
-      item.addEventListener('click', function() {
-        searchInput.value = school;
-        dropdownContainer.classList.remove('active');
-        dropdownContainer.innerHTML = ''; // Clear dropdown after selection
-      });
-      
-      dropdownContainer.appendChild(item);
-    });
-    
-    // Show dropdown
-    dropdownContainer.classList.add('active');
-  });
-  
-  // Handle focus events
-  searchInput.addEventListener('focus', function() {
-    if (dropdownContainer.childNodes.length > 0) {
-      dropdownContainer.classList.add('active');
-    }
-  });
-  
-  // Handle click outside
-  document.addEventListener('click', function(e) {
-    if (!searchInput.contains(e.target) && !dropdownContainer.contains(e.target)) {
-      dropdownContainer.classList.remove('active');
-    }
-  });
-  
-  // Handle keyboard navigation
-  searchInput.addEventListener('keydown', function(e) {
-    const items = dropdownContainer.querySelectorAll('.dropdown-item');
-    if (!items.length) return;
-    
-    const active = dropdownContainer.querySelector('.dropdown-item.active');
-    const activeIndex = Array.from(items).indexOf(active);
-    
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        if (active) {
-          items[activeIndex].classList.remove('active');
-          items[(activeIndex + 1) % items.length].classList.add('active');
-        } else {
-          items[0].classList.add('active');
-        }
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        if (active) {
-          items[activeIndex].classList.remove('active');
-          items[activeIndex === 0 ? items.length - 1 : activeIndex - 1].classList.add('active');
-        } else {
-          items[items.length - 1].classList.add('active');
-        }
-        break;
-      case 'Enter':
-        if (active) {
-          e.preventDefault();
-          searchInput.value = active.textContent.replace(/<\/?strong>/g, ''); // Remove HTML tags
-          dropdownContainer.classList.remove('active');
-          dropdownContainer.innerHTML = ''; // Clear dropdown after selection
-        }
-        break;
-      case 'Escape':
-        dropdownContainer.classList.remove('active');
-        break;
-    }
-  });
-  
-  // Handle search button click - clear dropdown when search is submitted
-  const searchButton = document.querySelector('.search-button');
-  if (searchButton) {
-    searchButton.addEventListener('click', function() {
-      dropdownContainer.classList.remove('active');
-      dropdownContainer.innerHTML = ''; // Clear dropdown
-    });
-  }
-}
-
-// Call this when the DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-  // Choose one of these approaches:
-  // 1. Load from CSV file:
-  // loadSchoolsFromCSV();
-  
-  // 2. Or use the hardcoded array:
-  initAutocomplete(nigerianUniversities);
-});
-
-// Wait for the document to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-  // Nigerian universities list - this is a small sample, you should replace with your full list
-  const nigerianUniversities = [
-    "University of Lagos",
-    "University of Ibadan",
-    "Ahmadu Bello University",
-    "University of Nigeria, Nsukka",
-    "University of Benin",
-    "Obafemi Awolowo University",
-    "University of Ilorin",
-    "University of Port Harcourt",
-    "Covenant University",
-    "Federal University of Technology, Akure",
-    "Federal University of Technology, Minna",
-    "Federal University of Technology, Owerri",
-    "Bayero University Kano",
-    "Lagos State University",
-    "Nnamdi Azikiwe University",
-    // Add all your universities here
-  ];
-
-  // Get the search input element
-  const searchInput = document.querySelector('.search-box input');
-  
-  // Check if search input exists
-  if (!searchInput) {
-    console.error('Search input not found');
-    return;
-  }
-  
-  console.log('Autocomplete initialized for:', searchInput); // Debug log
-  
-  // Create and append the dropdown container
-  const dropdownContainer = document.createElement('div');
-  dropdownContainer.className = 'search-dropdown';
-  searchInput.parentNode.appendChild(dropdownContainer);
-  
-  // Add event listener for input changes
-  searchInput.addEventListener('input', function() {
-    const query = this.value.toLowerCase().trim();
-    console.log('Search query:', query); // Debug log
-    
-    // Clear the dropdown
-    dropdownContainer.innerHTML = '';
-    
-    // Only show suggestions if query is at least 2 characters
-    if (query.length < 2) {
-      dropdownContainer.classList.remove('active');
-      return;
-    }
-    
-    // Filter universities based on query
-    const matches = nigerianUniversities.filter(school => 
-      school.toLowerCase().includes(query)
-    ).slice(0, 5); // Limit to 5 results
-    
-    console.log('Matches found:', matches.length); // Debug log
-    
-    if (matches.length === 0) {
-      dropdownContainer.classList.remove('active');
-      return;
-    }
-    
-    // Create dropdown items for each match
-    matches.forEach(school => {
-      const item = document.createElement('div');
-      item.className = 'dropdown-item';
-      
-      // Highlight the matching part
-      const highlightedText = school.replace(
-        new RegExp(query, 'gi'),
-        match => `<strong>${match}</strong>`
-      );
-      
-      item.innerHTML = highlightedText;
-      
-      // Handle click on dropdown item
-      item.addEventListener('click', function() {
-        searchInput.value = school;
-        dropdownContainer.classList.remove('active');
-        dropdownContainer.innerHTML = ''; // Clear dropdown after selection
-      });
-      
-      dropdownContainer.appendChild(item);
-    });
-    
-    // Show dropdown
-    dropdownContainer.classList.add('active');
-  });
-  
-  // Handle focus events
-  searchInput.addEventListener('focus', function() {
-    const query = this.value.toLowerCase().trim();
-    if (query.length >= 2) {
-      // Trigger the input event to show suggestions
-      this.dispatchEvent(new Event('input'));
-    }
-  });
-  
-  // Handle click outside
-  document.addEventListener('click', function(e) {
-    if (!searchInput.contains(e.target) && !dropdownContainer.contains(e.target)) {
-      dropdownContainer.classList.remove('active');
-    }
-  });
-  
-  // Add these styles directly to ensure the dropdown works
-  const style = document.createElement('style');
-  style.textContent = `
-    .search-box {
-      position: relative;
-    }
-    
-    .search-dropdown {
-      position: absolute;
-      z-index: 1000;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      width: calc(100% - 50px);
-      left: 0;
-      top: calc(100% + 5px);
-      transition: all 0.2s ease;
-      pointer-events: none;
-    }
-    
-    .search-dropdown.active {
-      max-height: 300px;
-      opacity: 1;
-      border: 1px solid #e2e8f0;
-      pointer-events: auto;
-    }
-    
-    .dropdown-item {
-      padding: 12px 15px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-size: 0.9rem;
-    }
-    
-    .dropdown-item:hover {
-      background-color: rgba(10, 124, 46, 0.05);
-    }
-    
-    .dropdown-item strong {
-      color: #0a7c2e;
-      font-weight: 600;
-    }
-    
-    @media (max-width: 576px) {
-      .search-dropdown {
-        width: 100%;
-        top: 100%;
-        left: 0;
-        border-radius: 0 0 8px 8px;
-      }
-      
-      .dropdown-item {
-        padding: 10px 12px;
-        font-size: 0.85rem;
-      }
-    }
-  `;
-  document.head.appendChild(style);
-  
-  console.log('Autocomplete setup complete'); // Debug log
-});
-
-// Immediately execute when this script is loaded
-(function() {
-  console.log('School search autocomplete initializing...');
-  
-  // Sample list of Nigerian universities
-  const universities = [
-    "University of Lagos",
-    "University of Ibadan",
-    "Ahmadu Bello University",
-    "University of Nigeria, Nsukka",
-    "University of Benin",
-    "Obafemi Awolowo University",
-    "University of Ilorin",
-    "University of Port Harcourt",
-    "Covenant University",
-    "Federal University of Technology, Akure",
-    "Federal University of Technology, Minna",
-    "Federal University of Technology, Owerri",
-    "Bayero University Kano",
-    "Lagos State University",
-    "Nnamdi Azikiwe University"
-  ];
-  
-  // Find the search input
-  const searchBox = document.querySelector('.search-box');
-  if (!searchBox) {
-    console.error('Search box not found');
-    return;
-  }
-  
-  const searchInput = searchBox.querySelector('input');
-  if (!searchInput) {
-    console.error('Search input not found');
-    return;
-  }
-  
-  console.log('Search input found:', searchInput);
-  
-  // Create dropdown container
-  const dropdownContainer = document.createElement('div');
-  dropdownContainer.className = 'school-search-dropdown';
-  dropdownContainer.style.position = 'absolute';
-  dropdownContainer.style.top = '100%';
-  dropdownContainer.style.left = '0';
-  dropdownContainer.style.width = '100%';
-  dropdownContainer.style.maxHeight = '0';
-  dropdownContainer.style.overflow = 'hidden';
-  dropdownContainer.style.background = 'white';
-  dropdownContainer.style.borderRadius = '0 0 8px 8px';
-  dropdownContainer.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
-  dropdownContainer.style.zIndex = '1000';
-  dropdownContainer.style.opacity = '0';
-  dropdownContainer.style.transition = 'all 0.2s ease';
-  
-  // Ensure search box has position relative
-  searchBox.style.position = 'relative';
-  
-  // Add dropdown to DOM
-  searchBox.appendChild(dropdownContainer);
-  
-  // Input event handler
-  searchInput.addEventListener('input', function() {
-    const query = this.value.toLowerCase().trim();
-    console.log('Search query:', query);
-    
-    // Clear dropdown
-    dropdownContainer.innerHTML = '';
-    
-    if (query.length < 2) {
-      hideDropdown();
-      return;
-    }
-    
-    // Filter matches
-    const matches = universities.filter(uni => 
-      uni.toLowerCase().includes(query)
-    ).slice(0, 5);
-    
-    console.log('Matches found:', matches.length);
-    
-    if (matches.length === 0) {
-      hideDropdown();
-      return;
-    }
-    
-    // Create dropdown items
-    matches.forEach(uni => {
-      const item = document.createElement('div');
-      item.style.padding = '12px 15px';
-      item.style.cursor = 'pointer';
-      item.style.transition = 'background-color 0.2s';
-      item.style.fontSize = '14px';
-      
-      // Highlight matching text
-      const highlightedText = uni.replace(
-        new RegExp(query, 'gi'),
-        match => `<strong style="color:#0a7c2e;font-weight:600;">${match}</strong>`
-      );
-      
-      item.innerHTML = highlightedText;
-      
-      // Hover effect
-      item.addEventListener('mouseover', function() {
-        this.style.backgroundColor = 'rgba(10, 124, 46, 0.05)';
-      });
-      
-      item.addEventListener('mouseout', function() {
-        this.style.backgroundColor = 'transparent';
-      });
-      
-      // Click handler
-      item.addEventListener('click', function() {
-        searchInput.value = uni;
-        hideDropdown();
-      });
-      
-      dropdownContainer.appendChild(item);
-    });
-    
-    // Show dropdown
-    showDropdown();
-  });
-  
-  // Focus handler
-  searchInput.addEventListener('focus', function() {
-    const query = this.value.toLowerCase().trim();
-    if (query.length >= 2 && dropdownContainer.childNodes.length === 0) {
-      // Simulate input to show results
-      this.dispatchEvent(new Event('input'));
-    } else if (dropdownContainer.childNodes.length > 0) {
-      showDropdown();
-    }
-  });
-  
-  // Document click handler to hide dropdown
-  document.addEventListener('click', function(e) {
-    if (!searchBox.contains(e.target)) {
-      hideDropdown();
-    }
-  });
-  
-  // Helper functions
-  function showDropdown() {
-    dropdownContainer.style.maxHeight = '300px';
-    dropdownContainer.style.opacity = '1';
-    dropdownContainer.style.border = '1px solid #e2e8f0';
-  }
-  
-  function hideDropdown() {
-    dropdownContainer.style.maxHeight = '0';
-    dropdownContainer.style.opacity = '0';
-    dropdownContainer.style.border = 'none';
-  }
-  
-  console.log('School search autocomplete initialized');
-})();
-
-// School autocomplete functionality
-const searchInput = document.querySelector('.search-box input');
-  
-if (searchInput) {
-  // Create datalist element
-  const dataList = document.createElement('datalist');
-  dataList.id = 'school-options';
-  
-  // Add datalist to the page
-  document.body.appendChild(dataList);
-  
-  // Connect input to datalist
-  searchInput.setAttribute('list', 'school-options');
-  
-  // Load universities from CSV file
-  fetch('nigerian_universities.csv')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.text();
-    })
-    .then(data => {
-      // Parse CSV data
-      const universities = data.split('\n')
-        .map(line => line.trim())
-        .filter(line => line && !line.startsWith('#'));
-      
-      // Remove header row if it exists
-      if (universities.length > 0 && 
-          (universities[0].toLowerCase().includes('university') || 
-           universities[0].toLowerCase().includes('name'))) {
-        universities.shift();
-      }
-      
-      // Add options to datalist
-      universities.forEach(uni => {
-        const option = document.createElement('option');
-        option.value = uni;
-        dataList.appendChild(option);
-      });
-      
-      console.log(`Loaded ${universities.length} universities from CSV`);
-    })
-    .catch(error => {
-      console.error('Error loading universities from CSV:', error);
-      
-      // Fallback to a minimal set of universities if CSV fails to load
-      const fallbackUniversities = [
-        "University of Lagos",
-        "University of Ibadan",
-        "Ahmadu Bello University",
-        "University of Nigeria, Nsukka",
-        "University of Benin"
-      ];
-      
-      fallbackUniversities.forEach(uni => {
-        const option = document.createElement('option');
-        option.value = uni;
-        dataList.appendChild(option);
-      });
-      
-      console.log('Using fallback university list');
-    });
-}
 
 // Cookie Consent Banner
 const cookieBanner = document.getElementById('cookie-banner');

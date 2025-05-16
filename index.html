@@ -62,7 +62,7 @@
                             </svg>
                             <span class="search-label-text">My school</span>
                         </div>
-                        <input type="text" placeholder="Enter your school name">
+                        <input type="text" id="school-search" placeholder="Enter your school name">
                         <button class="search-button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </button>
@@ -372,49 +372,5 @@
     </div>
 
     <script src="script.js"></script>
-    <script>
-      window.addEventListener('load', function() {
-        // Get the search input
-        const searchInput = document.querySelector('.search-box input');
-        
-        if (!searchInput) return;
-        
-        // Load universities from CSV file
-        fetch('universities.csv')
-          .then(response => response.text())
-          .then(data => {
-            const universities = data.split('\n')
-              .map(line => line.trim())
-              .filter(line => line && !line.startsWith('#'));
-            
-            // Create datalist element
-            const dataList = document.createElement('datalist');
-            dataList.id = 'school-options';
-            
-            // Create options for each university
-            universities.forEach(uni => {
-              const option = document.createElement('option');
-              option.value = uni;
-              dataList.appendChild(option);
-            });
-            
-            // Add datalist to the page
-            document.body.appendChild(dataList);
-            
-            // Connect input to datalist
-            searchInput.setAttribute('list', 'school-options');
-          })
-          .catch(err => {
-            console.error('Error loading universities:', err);
-            // Add fallback universities if CSV fails to load
-            ["University of Lagos", "University of Ibadan", "Ahmadu Bello University"]
-              .forEach(uni => {
-                const option = document.createElement('option');
-                option.value = uni;
-                dataList.appendChild(option);
-              });
-          });
-      });
-    </script>
 </body>
 </html>

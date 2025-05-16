@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "**/*", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "env": {
+    "SENDGRID_API_KEY": "@sendgrid_api_key",
+    "SENDER_EMAIL": "@sender_email"
+  }
+} 
