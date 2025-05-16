@@ -221,16 +221,6 @@ p {
   gap: 1.5rem;
 }
 
-.login-link {
-  color: var(--text-light);
-  font-weight: 500;
-  transition: var(--transition);
-}
-
-.login-link:hover {
-  color: var(--primary-medium);
-}
-
 .mobile-menu-button {
   display: none;
   flex-direction: column;
