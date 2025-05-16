@@ -128,7 +128,7 @@
         .hidden {
             display: none;
         }
-
+        
         .logout-button {
             position: absolute;
             top: 1rem;
@@ -142,7 +142,7 @@
             font-weight: 500;
             transition: all 0.3s ease;
         }
-
+        
         .logout-button:hover {
             background: #c82333;
         }
@@ -155,7 +155,7 @@
             <div class="admin-header">
                 <h1>Admin Login</h1>
                 <p>Enter your admin API key to continue</p>
-            </div>
+                </div>
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="apiKey">Admin API Key</label>
@@ -163,9 +163,9 @@
                 </div>
                 <button type="submit" class="login-button">Login</button>
                 <div id="loginError" class="error-message"></div>
-            </form>
+        </form>
         </div>
-
+        
         <!-- Admin Dashboard -->
         <div id="dashboardSection" class="hidden">
             <button class="logout-button" onclick="handleLogout()">Logout</button>
@@ -176,16 +176,16 @@
             
             <div class="admin-content">
                 <div class="stats-grid">
-                    <div class="stat-card">
+            <div class="stat-card">
                         <div class="stat-number" id="totalSubscribers">-</div>
                         <div class="stat-label">Total Subscribers</div>
-                    </div>
-                    <div class="stat-card">
+            </div>
+            <div class="stat-card">
                         <div class="stat-number" id="todaySubscribers">-</div>
                         <div class="stat-label">New Today</div>
-                    </div>
-                </div>
-
+            </div>
+        </div>
+        
                 <div style="text-align: center;">
                     <button class="export-button" onclick="exportWaitlist()">Export Waitlist to CSV</button>
                     <div id="errorMessage" class="error-message"></div>
