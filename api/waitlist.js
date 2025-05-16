@@ -8,13 +8,21 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 let auth;
 let sheets;
 try {
+  console.log('Attempting to parse Google Sheets credentials...');
+  const credentials = JSON.parse(process.env.GOOGLE_SHEETS_CREDENTIALS);
+  console.log('Credentials parsed successfully. Service account email:', credentials.client_email);
+  
   auth = new google.auth.GoogleAuth({
-    credentials: JSON.parse(process.env.GOOGLE_SHEETS_CREDENTIALS),
+    credentials: credentials,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
   sheets = google.sheets({ version: 'v4', auth });
+  console.log('Google Sheets initialized successfully');
 } catch (error) {
   console.error('Error initializing Google Sheets:', error);
+  if (error instanceof SyntaxError) {
+    console.error('This is a JSON parsing error. The credentials JSON might be malformed.');
+  }
 }
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
