@@ -124,46 +124,21 @@ if (backToTopButton) {
 
 // University Search Autocomplete
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM Content Loaded - Initializing university search');
+  const schoolsList = document.getElementById('schools-list');
   
-  const searchBox = document.querySelector('.search-box');
-  if (!searchBox) {
-    console.error('Search box not found');
-    return;
-  }
-  console.log('Search box found');
-
-  const searchInput = searchBox.querySelector('input');
-  if (!searchInput) {
-    console.error('Search input not found');
-    return;
-  }
-  console.log('Search input found');
-
-  // Create dropdown container
-  const dropdownContainer = document.createElement('div');
-  dropdownContainer.className = 'search-dropdown';
-  searchBox.appendChild(dropdownContainer);
-  console.log('Dropdown container created');
-
   // Load universities from CSV file
-  console.log('Fetching universities from CSV');
   fetch('nigerian_universities.csv')
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      console.log('CSV file fetched successfully');
       return response.text();
     })
     .then(data => {
-      console.log('CSV data received, parsing...');
       // Parse CSV data
       const universities = data.split('\n')
         .map(line => line.trim())
         .filter(line => line && !line.startsWith('#'));
-
-      console.log(`Found ${universities.length} universities`);
 
       // Remove header row if it exists
       if (universities.length > 0 && 
@@ -171,115 +146,12 @@ document.addEventListener('DOMContentLoaded', function() {
            universities[0].toLowerCase().includes('name'))) {
         universities.shift();
       }
-  
-      // Handle input changes
-      searchInput.addEventListener('input', function() {
-        const query = this.value.toLowerCase().trim();
-        console.log('Search input changed:', query);
-    
-        // Clear dropdown
-        dropdownContainer.innerHTML = '';
-    
-        if (query.length < 2) {
-          dropdownContainer.classList.remove('active');
-          return;
-        }
-    
-        // Filter universities based on query
-        const matches = universities.filter(school => 
-          school.toLowerCase().includes(query)
-        ).slice(0, 5); // Limit to 5 results
-        
-        console.log(`Found ${matches.length} matches for query: ${query}`);
-    
-        if (matches.length === 0) {
-          dropdownContainer.classList.remove('active');
-          return;
-        }
-    
-        // Create dropdown items
-        matches.forEach(school => {
-          const item = document.createElement('div');
-          item.className = 'dropdown-item';
-      
-          // Highlight the matching part
-          const highlightedText = school.replace(
-            new RegExp(query, 'gi'),
-            match => `<strong>${match}</strong>`
-          );
-      
-          item.innerHTML = highlightedText;
-      
-          // Handle click on dropdown item
-          item.addEventListener('click', function() {
-            searchInput.value = school;
-            dropdownContainer.classList.remove('active');
-            dropdownContainer.innerHTML = ''; // Clear dropdown after selection
-          });
-      
-          dropdownContainer.appendChild(item);
-        });
-    
-        // Show dropdown
-        dropdownContainer.classList.add('active');
-        console.log('Dropdown should be visible now');
-      });
-  
-      // Handle focus events
-      searchInput.addEventListener('focus', function() {
-        const query = this.value.toLowerCase().trim();
-        if (query.length >= 2) {
-          // Trigger the input event to show suggestions
-          this.dispatchEvent(new Event('input'));
-        }
-      });
-  
-      // Handle click outside
-      document.addEventListener('click', function(e) {
-        if (!searchBox.contains(e.target)) {
-          dropdownContainer.classList.remove('active');
-        }
-      });
-  
-      // Handle keyboard navigation
-      searchInput.addEventListener('keydown', function(e) {
-        const items = dropdownContainer.querySelectorAll('.dropdown-item');
-        if (!items.length) return;
-    
-        const active = dropdownContainer.querySelector('.dropdown-item.active');
-        const activeIndex = Array.from(items).indexOf(active);
-    
-        switch (e.key) {
-          case 'ArrowDown':
-            e.preventDefault();
-            if (active) {
-              items[activeIndex].classList.remove('active');
-              items[(activeIndex + 1) % items.length].classList.add('active');
-            } else {
-              items[0].classList.add('active');
-            }
-            break;
-          case 'ArrowUp':
-            e.preventDefault();
-            if (active) {
-              items[activeIndex].classList.remove('active');
-              items[activeIndex === 0 ? items.length - 1 : activeIndex - 1].classList.add('active');
-            } else {
-              items[items.length - 1].classList.add('active');
-            }
-            break;
-          case 'Enter':
-            if (active) {
-              e.preventDefault();
-              searchInput.value = active.textContent.replace(/<\/?strong>/g, ''); // Remove HTML tags
-              dropdownContainer.classList.remove('active');
-              dropdownContainer.innerHTML = ''; // Clear dropdown after selection
-            }
-            break;
-          case 'Escape':
-            dropdownContainer.classList.remove('active');
-            break;
-        }
+
+      // Add universities to datalist
+      universities.forEach(school => {
+        const option = document.createElement('option');
+        option.value = school;
+        schoolsList.appendChild(option);
       });
     })
     .catch(error => {
