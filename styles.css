@@ -2625,3 +2625,51 @@ input.error {
 .modal-close:hover {
   color: #1a202c;
 }
+
+.social-connect {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.social-connect h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(10, 124, 46, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-medium);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(10, 124, 46, 0.1);
+}
+
+.social-icon:hover {
+    background-color: var(--primary-medium);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(10, 124, 46, 0.2);
+}
+
+.social-icon svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+
+.social-icon:hover svg {
+    transform: scale(1.1);
+}
