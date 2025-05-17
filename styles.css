@@ -2253,6 +2253,7 @@ p {
 .resource-image {
   height: 200px;
   overflow: hidden;
+  position: relative;
 }
 
 .resource-image img {
@@ -2262,8 +2263,85 @@ p {
   transition: var(--transition);
 }
 
+/* Video play button overlay */
+.resource-image.video-thumbnail::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.resource-image.video-thumbnail::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background: var(--primary-medium);
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='5 3 19 12 5 21 5 3'%3E%3C/polygon%3E%3C/svg%3E");
+    background-position: 55% center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+}
+
+/* Outer pulsing circle */
+.resource-image.video-thumbnail .pulse-circle {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.4) 100%);
+    border-radius: 50%;
+    z-index: 2;
+    animation: pulse 2s ease-out infinite;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.95);
+        opacity: 0.9;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0.95);
+        opacity: 0.9;
+    }
+}
+
+.resource-card:hover .resource-image.video-thumbnail::before {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.resource-card:hover .resource-image.video-thumbnail::after {
+    transform: translate(-50%, -50%) scale(1.1);
+    background-color: var(--primary-dark);
+}
+
+.resource-card:hover .resource-image.video-thumbnail .pulse-circle {
+    animation: pulse 1.5s ease-out infinite;
+}
+
 .resource-card:hover .resource-image img {
-  transform: scale(1.05);
+    transform: scale(1.05);
 }
 
 .resource-content {
@@ -2309,14 +2387,44 @@ p {
 
 /* Institutions Section Styles */
 .institutions-section {
-  padding: 5rem 0;
-  background-color: var(--background-color);
+    padding: 5rem 0;
+    background-color: var(--background-color);
+    overflow: hidden;
 }
 
 .institutions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .institutions-grid {
+        display: flex;
+        gap: 1.5rem;
+        overflow-x: auto;
+        padding: 1rem 0.5rem;
+        margin: 0 -0.5rem;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+    }
+
+    .institutions-grid::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+
+    .institution-card {
+        flex: 0 0 200px;
+        scroll-snap-align: start;
+        margin-bottom: 0;
+    }
+
+    .institution-card img {
+        width: 100px;
+        height: 100px;
+    }
 }
 
 .institution-card {
