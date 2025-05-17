@@ -908,18 +908,6 @@ p {
     font-weight: 500;
 }
 
-.contact-header-stats {
-    display: flex;
-    justify-content: center;
-    gap: 4rem;
-    margin-top: 3rem;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2.5rem;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px rgba(8, 8, 8, 0.226);
-}
 
 .contact-header-wave {
     position: absolute;
@@ -948,11 +936,6 @@ p {
         font-size: 3rem;
     }
 
-    .contact-header-stats {
-        gap: 2rem;
-        padding: 2rem;
-    }
-
     .stat-number {
         font-size: 2.5rem;
     }
@@ -969,12 +952,6 @@ p {
 
     .contact-header p {
         font-size: 1.1rem;
-    }
-
-    .contact-header-stats {
-        flex-direction: column;
-        gap: 2rem;
-        padding: 2rem;
     }
 
     .stat-item:not(:last-child)::after {
